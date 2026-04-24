@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HeroCare — 소방관 정신건강 통합 플랫폼</title>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --fire: #FF4500;
+      --ember: #FF7A1F;
+      --gold: #FFB347;
+      --smoke: #1A1A1F;
+      --ash: #2C2C35;
+      --mid: #4A4A55;
+      --mist: #8A8A95;
+      --light: #F5F4F0;
+      --white: #FDFCF9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--smoke);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 5vw;
+      background: rgba(26,26,31,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,69,0,0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--fire); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--mist);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--fire);
+      color: var(--white) !important;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 700 !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--ember) !important; color: var(--white) !important; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 10rem 5vw 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(255,69,0,0.12) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,122,31,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,69,0,0.12);
+      border: 1px solid rgba(255,69,0,0.3);
+      color: var(--ember);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    .hero-title em {
+      font-style: italic;
+      font-family: 'DM Serif Display', serif;
+      color: var(--fire);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--mist);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+      font-weight: 300;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .btn-primary {
+      background: var(--fire);
+      color: var(--white);
+      padding: 0.9rem 2rem;
+      border-radius: 3rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--ember); transform: translateY(-2px); }
+
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--light);
+      padding: 0.9rem 2rem;
+      border-radius: 3rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* flame graphic */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .flame-ring {
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 60%, rgba(255,69,0,0.25) 0%, rgba(255,122,31,0.1) 40%, transparent 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .flame-ring::before {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,69,0,0.2);
+      animation: pulse-ring 3s ease-in-out infinite;
+    }
+    .flame-ring::after {
+      content: '';
+      position: absolute;
+      inset: 50px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,180,71,0.15);
+      animation: pulse-ring 3s 1s ease-in-out infinite;
+    }
+
+    .flame-icon {
+      font-size: 9rem;
+      filter: drop-shadow(0 0 40px rgba(255,69,0,0.6));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* stats bar */
+    .stats-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 2px;
+      margin-top: 4rem;
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+    .stat-item {
+      flex: 1;
+      background: var(--ash);
+      padding: 1.5rem 2rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+    .stat-item:first-child { border-radius: 1rem 0.5rem 0.5rem 1rem; }
+    .stat-item:last-child { border-radius: 0.5rem 1rem 1rem 0.5rem; }
+    .stat-num {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 2.2rem;
+      color: var(--fire);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--mist);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section { padding: 7rem 5vw; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--fire);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-desc {
+      color: var(--mist);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 560px;
+      font-weight: 300;
+    }
+
+    /* ─── PROBLEM ─── */
+    #problem {
+      background: var(--ash);
+      position: relative;
+      overflow: hidden;
+    }
+    #problem::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,69,0,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      margin-top: 4rem;
+    }
+
+    .problem-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .prob-card {
+      background: var(--smoke);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-left: 3px solid var(--fire);
+      border-radius: 0.75rem;
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .prob-card:hover { border-left-color: var(--gold); transform: translateX(6px); }
+    .prob-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .prob-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .prob-text p { font-size: 0.82rem; color: var(--mist); line-height: 1.5; }
+
+    .problem-right h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      color: var(--light);
+    }
+    .problem-right h3 strong { color: var(--fire); }
+    .problem-right p { color: var(--mist); line-height: 1.8; font-size: 0.95rem; font-weight: 300; }
+
+    /* ─── FLOW / HOW IT WORKS ─── */
+    #how {
+      position: relative;
+      text-align: center;
+    }
+
+    .flow-header { margin-bottom: 5rem; }
+
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .flow-steps::before {
+      content: '';
+      position: absolute;
+      top: 38px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--fire), var(--gold), var(--ember), var(--fire), var(--gold));
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      padding: 0 1rem;
+    }
+
+    .step-dot {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--ash);
+      border: 2px solid var(--fire);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      position: relative;
+      z-index: 1;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .step:hover .step-dot { background: var(--fire); transform: scale(1.1); }
+
+    .step-num {
+      position: absolute;
+      top: -8px; right: -4px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--ember);
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+    }
+
+    .step h4 { font-size: 0.9rem; font-weight: 700; line-height: 1.3; }
+    .step p { font-size: 0.77rem; color: var(--mist); line-height: 1.5; }
+
+    /* ─── FEATURES ─── */
+    #features { background: var(--ash); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .feature-card {
+      background: var(--smoke);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 1.2rem;
+      padding: 2rem;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--fire), var(--gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .feature-card:hover { border-color: rgba(255,69,0,0.3); transform: translateY(-4px); }
+    .feature-card:hover::before { transform: scaleX(1); }
+
+    .feat-icon { font-size: 2.5rem; margin-bottom: 1.2rem; }
+    .feat-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .feat-desc { font-size: 0.85rem; color: var(--mist); line-height: 1.7; font-weight: 300; }
+
+    .feature-card.highlight {
+      background: linear-gradient(135deg, rgba(255,69,0,0.15), rgba(255,122,31,0.08));
+      border-color: rgba(255,69,0,0.3);
+    }
+
+    /* risk table */
+    .risk-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .risk-table th {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mist);
+      padding: 0.5rem 0.8rem;
+      text-align: left;
+    }
+    .risk-table td {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.82rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 2rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-ok { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .badge-warn { background: rgba(234,179,8,0.15); color: #facc15; }
+    .badge-danger { background: rgba(249,115,22,0.15); color: #fb923c; }
+    .badge-critical { background: rgba(239,68,68,0.15); color: #f87171; }
+
+    /* ─── EMERGENCY ─── */
+    #emergency {
+      background: linear-gradient(135deg, rgba(255,69,0,0.18) 0%, rgba(26,26,31,0) 60%);
+      border-top: 1px solid rgba(255,69,0,0.15);
+      border-bottom: 1px solid rgba(255,69,0,0.15);
+      text-align: center;
+    }
+
+    .emergency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--fire);
+      color: var(--white);
+      padding: 0.6rem 1.5rem;
+      border-radius: 3rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+
+    .emergency-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .emergency-desc {
+      color: var(--mist);
+      font-size: 1rem;
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .sos-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--fire);
+      color: var(--white);
+      padding: 1.2rem 3rem;
+      border-radius: 4rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 0 40px rgba(255,69,0,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .sos-button:hover { transform: scale(1.04); box-shadow: 0 0 60px rgba(255,69,0,0.6); }
+
+    /* ─── COMPARE ─── */
+    #compare {
+      background: var(--smoke);
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .compare-col {
+      border-radius: 1.5rem;
+      overflow: hidden;
+    }
+
+    .compare-head {
+      padding: 1.5rem 2rem;
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.1rem;
+    }
+    .compare-col.before .compare-head { background: var(--ash); color: var(--mist); }
+    .compare-col.after .compare-head {
+      background: linear-gradient(90deg, var(--fire), var(--ember));
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .compare-items {
+      background: var(--ash);
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .compare-col.after .compare-items { background: rgba(255,69,0,0.06); border: 1px solid rgba(255,69,0,0.15); border-top: none; }
+
+    .compare-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.9rem;
+      color: var(--light);
+    }
+    .compare-col.before .compare-item { color: var(--mist); }
+
+    .ci-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ─── EFFECTS ─── */
+    #effects {
+      background: var(--ash);
+      text-align: center;
+    }
+
+    .effects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .effect-card {
+      background: var(--smoke);
+      border-radius: 1.2rem;
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.3s;
+    }
+    .effect-card:hover { transform: translateY(-6px); }
+
+    .effect-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .effect-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fire);
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+    .effect-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .effect-items { list-style: none; text-align: left; }
+    .effect-items li {
+      font-size: 0.85rem;
+      color: var(--mist);
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .effect-items li::before { content: '→'; color: var(--fire); font-size: 0.75rem; }
+
+    /* ─── PLAN ─── */
+    #plan {
+      background: var(--smoke);
+    }
+
+    .plan-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 4rem;
+      border-radius: 1.2rem;
+      overflow: hidden;
+    }
+
+    .plan-step {
+      background: var(--ash);
+      padding: 3rem 2rem;
+      position: relative;
+    }
+
+    .plan-step-num {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 4rem;
+      color: rgba(255,69,0,0.15);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .plan-step-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fire);
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-step h4 {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .plan-items { list-style: none; }
+    .plan-items li {
+      font-size: 0.83rem;
+      color: var(--mist);
+      padding: 0.35rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .plan-items li::before { content: '◆'; color: var(--fire); font-size: 0.5rem; }
+
+    /* ─── CTA ─── */
+    #cta {
+      text-align: center;
+      background: linear-gradient(180deg, var(--smoke) 0%, var(--ash) 100%);
+      padding: 8rem 5vw;
+      position: relative;
+      overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(255,69,0,0.08) 0%, transparent 70%);
+    }
+
+    .cta-title {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .cta-title em {
+      font-style: italic;
+      font-family: 'DM Serif Display', serif;
+      color: var(--fire);
+    }
+
+    .cta-sub {
+      font-size: 1rem;
+      color: var(--mist);
+      margin-bottom: 3rem;
+      font-weight: 300;
+      position: relative;
+    }
+
+    .cta-btns {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--smoke);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 3rem 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: 'Black Han Sans', sans-serif;
+      font-size: 1.3rem;
+      color: var(--white);
+    }
+    .footer-logo span { color: var(--fire); }
+
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: var(--mist);
+      margin-top: 0.3rem;
+    }
+
+    .footer-right {
+      text-align: right;
+      font-size: 0.78rem;
+      color: var(--mid);
+      line-height: 1.8;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-16px); }
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50%       { opacity: 0.1; transform: scale(1.05); }
+    }
+
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,69,0,0.4); }
+      50%       { box-shadow: 0 0 0 12px rgba(255,69,0,0); }
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; text-align: center; padding-top: 8rem; }
+      .hero-sub { margin: 0 auto 2.5rem; }
+      .hero-btns { justify-content: center; flex-wrap: wrap; }
+      .hero-visual { display: none; }
+      .stats-bar { flex-direction: column; gap: 0.5rem; }
+      .stat-item { border-radius: 0.75rem !important; }
+      .problem-grid, .compare-grid { grid-template-columns: 1fr; }
+      .features-grid, .effects-grid, .plan-steps { grid-template-columns: 1fr; }
+      .flow-steps { grid-template-columns: 1fr; gap: 2rem; }
+      .flow-steps::before { display: none; }
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a class="nav-logo" href="#"><span>🔥</span> HeroCare</a>
+  <ul class="nav-links">
+    <li><a href="#problem">문제</a></li>
+    <li><a href="#how">서비스 흐름</a></li>
+    <li><a href="#features">주요 기능</a></li>
+    <li><a href="#effects">기대 효과</a></li>
+    <li><a href="#cta" class="nav-cta">도입 문의</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-tag">🔥 소방관 정신건강 통합 관리 플랫폼</div>
+    <h1 class="hero-title">
+      영웅의 마음을<br/>
+      <em>먼저</em> 지킵니다
+    </h1>
+    <p class="hero-sub">
+      HeroCare는 소방관의 PTSD·우울·불안을 정기 심리검사로 조기 발견하고,
+      위험 신호를 자동 분석해 상담·치료·사후관리까지 연결하는 통합 심리케어 플랫폼입니다.
+    </p>
+    <div class="hero-btns">
+      <a href="#how" class="btn-primary">서비스 알아보기 →</a>
+      <a href="#cta" class="btn-ghost">도입 문의</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="flame-ring">
+      <div class="flame-icon">🛡️</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">2주</div>
+      <div class="stat-label">정기 심리검사 주기</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">24h</div>
+      <div class="stat-label">긴급 상담 대응</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4단계</div>
+      <div class="stat-label">자동 위험도 분류</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">개인정보 비공개 보호</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ─── -->
+<section id="problem">
+  <div class="problem-grid">
+    <div class="problem-cards">
+      <div class="prob-card reveal">
+        <div class="prob-icon">🧠</div>
+        <div class="prob-text">
+          <h4>반복적 트라우마 노출</h4>
+          <p>화재·구조·사고 현장에서 극단적 상황을 반복 경험하며 PTSD·우울·불안이 누적됩니다.</p>
+        </div>
+      </div>
+      <div class="prob-card reveal" style="transition-delay:0.1s">
+        <div class="prob-icon">🚧</div>
+        <div class="prob-text">
+          <h4>도움 요청의 문화적 장벽</h4>
+          <p>강인함이 요구되는 직업 문화로 인해 스스로 정신건강 도움을 요청하기 어렵습니다.</p>
+        </div>
+      </div>
+      <div class="prob-card reveal" style="transition-delay:0.2s">
+        <div class="prob-icon">⏰</div>
+        <div class="prob-text">
+          <h4>사후 대응 중심 구조</h4>
+          <p>현재 시스템은 문제가 심각해진 후에야 개입되는 구조로, 예방적 관리가 부재합니다.</p>
+        </div>
+      </div>
+      <div class="prob-card reveal" style="transition-delay:0.3s">
+        <div class="prob-icon">🔗</div>
+        <div class="prob-text">
+          <h4>상담 연결의 비체계성</h4>
+          <p>전문 상담으로의 체계적 연결 경로가 없어 실질적인 치료로 이어지지 않습니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="problem-right reveal">
+      <h3>지금 시스템은<br/><strong>"늦게 발견"</strong>되는<br/>구조입니다</h3>
+      <p>
+        소방관은 국민의 안전을 지키는 영웅이지만, 정작 그들의 정신건강을 지켜주는 시스템은 턱없이 부족합니다.
+        HeroCare는 이 구조적 공백을 채우기 위해 설계되었습니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section id="how">
+  <div class="flow-header reveal">
+    <div class="section-tag">서비스 흐름</div>
+    <h2 class="section-title">5단계 통합 케어 시스템</h2>
+    <p class="section-desc" style="margin:0 auto">
+      정기검사부터 회복 추적까지, 끊김 없이 연결되는 완전한 정신건강 관리 사이클입니다.
+    </p>
+  </div>
+  <div class="flow-steps">
+    <div class="step reveal">
+      <div class="step-dot">📋<span class="step-num">1</span></div>
+      <h4>정기 심리검사</h4>
+      <p>2주 1회 간단한 설문 (5~10분), PTSD·우울·불안·스트레스 측정</p>
+    </div>
+    <div class="step reveal" style="transition-delay:0.1s">
+      <div class="step-dot">📊<span class="step-num">2</span></div>
+      <h4>위험도 자동 분석</h4>
+      <p>4단계 등급화 (정상·주의·위험·고위험) 및 즉각 알림</p>
+    </div>
+    <div class="step reveal" style="transition-delay:0.2s">
+      <div class="step-dot">🤝<span class="step-num">3</span></div>
+      <h4>상담 자동 연결</h4>
+      <p>전문 상담사 매칭, 일정 예약, 비대면 상담 지원</p>
+    </div>
+    <div class="step reveal" style="transition-delay:0.3s">
+      <div class="step-dot">🧩<span class="step-num">4</span></div>
+      <h4>맞춤 프로그램</h4>
+      <p>트라우마 치료·명상·수면 개선·집단 상담 등 개인화 추천</p>
+    </div>
+    <div class="step reveal" style="transition-delay:0.4s">
+      <div class="step-dot">📈<span class="step-num">5</span></div>
+      <h4>사후관리</h4>
+      <p>치료 후 재검사, 회복 상태 추적, 지속 관리 또는 종료 판단</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<section id="features">
+  <div class="reveal">
+    <div class="section-tag">주요 기능</div>
+    <h2 class="section-title">HeroCare가 제공하는 것</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">정기 심리검사</div>
+      <div class="feat-desc">PTSD, 우울, 불안, 스트레스를 5~10분 설문으로 측정합니다. 자동 점수화 및 등급화로 부담 없이 정기적인 관리를 시작하세요.</div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.1s">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">위험도 분석 시스템</div>
+      <div class="feat-desc">
+        <table class="risk-table">
+          <thead>
+            <tr><th>등급</th><th>상태</th><th>조치</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="badge badge-ok">정상</span></td><td>문제 없음</td><td>정기검사 유지</td></tr>
+            <tr><td><span class="badge badge-warn">주의</span></td><td>스트레스 증가</td><td>자가관리 콘텐츠</td></tr>
+            <tr><td><span class="badge badge-danger">위험</span></td><td>상담 필요</td><td>상담 연결</td></tr>
+            <tr><td><span class="badge badge-critical">고위험</span></td><td>즉각 개입</td><td>긴급 상담</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.2s">
+      <div class="feat-icon">🤝</div>
+      <div class="feat-title">상담 자동 연결</div>
+      <div class="feat-desc">전문 상담사 매칭·일정 예약·비대면 상담·상담 기록 관리를 하나의 플랫폼에서 처리합니다.</div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.3s">
+      <div class="feat-icon">🧩</div>
+      <div class="feat-title">맞춤형 프로그램</div>
+      <div class="feat-desc">트라우마 치료, 명상·호흡 훈련, 수면 개선, 집단 상담 등 검사 결과에 맞는 프로그램을 추천합니다.</div>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.4s">
+      <div class="feat-icon">📈</div>
+      <div class="feat-title">사후관리 시스템</div>
+      <div class="feat-desc">치료 후 재검사와 회복 상태 추적으로 끊김 없는 지속 관리를 제공합니다.</div>
+    </div>
+    <div class="feature-card highlight reveal" style="transition-delay:0.5s">
+      <div class="feat-icon">🚨</div>
+      <div class="feat-title">긴급 지원 버튼 ★</div>
+      <div class="feat-desc">핵심 차별화 기능. 즉시 상담 연결이 가능한 긴급 도움 요청 버튼으로 24시간 대응합니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EMERGENCY ─── -->
+<section id="emergency">
+  <div class="emergency-badge">🚨 24시간 대응</div>
+  <h2 class="emergency-title">지금 당장<br/>도움이 필요하다면</h2>
+  <p class="emergency-desc">긴급 도움 요청 버튼 하나로 즉시 전문 상담사와 연결됩니다. 혼자 버티지 마세요.</p>
+  <a href="#cta" class="sos-button">🚨 긴급 상담 요청하기</a>
+</section>
+
+<!-- ─── COMPARE ─── -->
+<section id="compare">
+  <div class="reveal">
+    <div class="section-tag">차별성</div>
+    <h2 class="section-title">기존 서비스 vs HeroCare</h2>
+    <p class="section-desc">"문제를 찾아가는 서비스"가 아니라 "문제를 먼저 발견하는 시스템"입니다.</p>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col before reveal">
+      <div class="compare-head">기존 상담 서비스</div>
+      <div class="compare-items">
+        <div class="compare-item"><span class="ci-icon">❌</span>자발적 이용에 의존</div>
+        <div class="compare-item"><span class="ci-icon">❌</span>사후 대응 중심</div>
+        <div class="compare-item"><span class="ci-icon">❌</span>단발성 상담으로 끝남</div>
+        <div class="compare-item"><span class="ci-icon">❌</span>개인 의지에 의존</div>
+        <div class="compare-item"><span class="ci-icon">❌</span>조기 발견 불가능</div>
+        <div class="compare-item"><span class="ci-icon">❌</span>체계적 연결 경로 없음</div>
+      </div>
+    </div>
+    <div class="compare-col after reveal" style="transition-delay:0.15s">
+      <div class="compare-head">🔥 HeroCare</div>
+      <div class="compare-items">
+        <div class="compare-item"><span class="ci-icon">✅</span>정기 검사 기반 자동 관리</div>
+        <div class="compare-item"><span class="ci-icon">✅</span>사전 예방 시스템</div>
+        <div class="compare-item"><span class="ci-icon">✅</span>치료·사후관리 지속 연결</div>
+        <div class="compare-item"><span class="ci-icon">✅</span>시스템 기반 자동 연결</div>
+        <div class="compare-item"><span class="ci-icon">✅</span>AI 위험도 분석으로 조기 발견</div>
+        <div class="compare-item"><span class="ci-icon">✅</span>전담 상담사 자동 매칭</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EFFECTS ─── -->
+<section id="effects">
+  <div class="reveal">
+    <div class="section-tag">기대 효과</div>
+    <h2 class="section-title">HeroCare가 만드는 변화</h2>
+  </div>
+  <div class="effects-grid">
+    <div class="effect-card reveal">
+      <div class="effect-icon">👤</div>
+      <div class="effect-label">개인적 효과</div>
+      <div class="effect-title">소방관 개인</div>
+      <ul class="effect-items">
+        <li>정신건강 개선 및 안정</li>
+        <li>트라우마 조기 치료</li>
+        <li>삶의 질 향상</li>
+        <li>번아웃 예방</li>
+      </ul>
+    </div>
+    <div class="effect-card reveal" style="transition-delay:0.1s">
+      <div class="effect-icon">🏢</div>
+      <div class="effect-label">조직적 효과</div>
+      <div class="effect-title">소방 조직</div>
+      <ul class="effect-items">
+        <li>업무 효율 및 집중력 향상</li>
+        <li>사고 대응 능력 강화</li>
+        <li>이직률 감소</li>
+        <li>팀 응집력 향상</li>
+      </ul>
+    </div>
+    <div class="effect-card reveal" style="transition-delay:0.2s">
+      <div class="effect-icon">🌏</div>
+      <div class="effect-label">사회적 효과</div>
+      <div class="effect-title">국민과 사회</div>
+      <ul class="effect-items">
+        <li>소방 서비스 품질 향상</li>
+        <li>국민 안전 수준 제고</li>
+        <li>공공 의료비용 절감</li>
+        <li>사회적 인식 개선</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PLAN ─── -->
+<section id="plan">
+  <div class="reveal">
+    <div class="section-tag">실행 계획</div>
+    <h2 class="section-title">단계별 출시 로드맵</h2>
+  </div>
+  <div class="plan-steps">
+    <div class="plan-step reveal">
+      <div class="plan-step-num">01</div>
+      <div class="plan-step-tag">1단계 · 개발</div>
+      <h4>플랫폼 구축</h4>
+      <ul class="plan-items">
+        <li>웹/모바일 앱 개발</li>
+        <li>심리검사 시스템 구축</li>
+        <li>위험도 분석 AI 개발</li>
+        <li>상담사 네트워크 구성</li>
+      </ul>
+    </div>
+    <div class="plan-step reveal" style="transition-delay:0.1s">
+      <div class="plan-step-num">02</div>
+      <div class="plan-step-tag">2단계 · 시범운영</div>
+      <h4>파일럿 도입</h4>
+      <ul class="plan-items">
+        <li>특정 지역 소방서 시범 도입</li>
+        <li>현장 피드백 수집 및 개선</li>
+        <li>효과성 데이터 확보</li>
+        <li>소방청 협력 체계 구축</li>
+      </ul>
+    </div>
+    <div class="plan-step reveal" style="transition-delay:0.2s">
+      <div class="plan-step-num">03</div>
+      <div class="plan-step-tag">3단계 · 확장</div>
+      <h4>전국 및 타 직군 확대</h4>
+      <ul class="plan-items">
+        <li>전국 소방서 도입 확대</li>
+        <li>경찰·군인 등 타 직군 적용</li>
+        <li>B2G 정부 계약 확대</li>
+        <li>해외 시장 진출 검토</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section id="cta">
+  <h2 class="cta-title reveal">
+    소방관의 삶을 지키고<br/><em>국민의 안전</em>을 지킵니다
+  </h2>
+  <p class="cta-sub reveal">HeroCare와 함께 예방적 정신건강 관리 시스템을 구축하세요.</p>
+  <div class="cta-btns reveal">
+    <a href="mailto:contact@herocare.kr" class="btn-primary">도입 문의하기 →</a>
+    <a href="#how" class="btn-ghost">서비스 자세히 보기</a>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div>
+    <div class="footer-logo"><span>🔥</span> HeroCare</div>
+    <div class="footer-tagline">소방관 정신건강 통합 케어 플랫폼</div>
+  </div>
+  <div class="footer-right">
+    <div>개인정보 보호정책 · 이용약관</div>
+    <div>© 2025 HeroCare. All rights reserved.</div>
+    <div>contact@herocare.kr</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HeroCare — 소방관 정신건강 통합 플랫폼</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --fire:#FF4500;--ember:#FF7A1F;--gold:#FFB347;
+  --smoke:#13131A;--ash:#1E1E28;--card:#252532;
+  --border:rgba(255,255,255,0.07);
+  --mist:#8A8A9A;--light:#F0EFE9;--white:#FDFCF8;
+  --green:#22C55E;--blue:#3B82F6;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--smoke);color:var(--white);display:flex;flex-direction:column;}
+
+/* NAV */
+header{
+  flex-shrink:0;
+  background:rgba(19,19,26,0.97);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.8rem;
+  display:flex;align-items:center;gap:0;
+  height:60px;position:relative;z-index:50;
+}
+.logo{font-family:'Black Han Sans',sans-serif;font-size:1.3rem;color:var(--white);margin-right:2rem;white-space:nowrap;flex-shrink:0;}
+.logo span{color:var(--fire);}
+
+nav{display:flex;gap:3px;flex:1;}
+.tab-btn{
+  display:flex;align-items:center;gap:0.4rem;
+  padding:0.45rem 1rem;border-radius:0.55rem;
+  border:none;background:transparent;
+  color:var(--mist);font-family:inherit;font-size:0.82rem;font-weight:500;
+  cursor:pointer;white-space:nowrap;transition:background 0.2s,color 0.2s;
+}
+.tab-btn:hover{background:rgba(255,255,255,0.05);color:var(--light);}
+.tab-btn.active{background:rgba(255,69,0,0.14);color:var(--fire);font-weight:700;}
+
+.sos-pill{
+  margin-left:auto;flex-shrink:0;
+  background:var(--fire);color:var(--white);border:none;border-radius:2rem;
+  padding:0.42rem 1rem;font-family:inherit;font-size:0.78rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;gap:0.35rem;
+  animation:pulse-sos 2.5s ease-in-out infinite;transition:transform 0.2s;
+}
+.sos-pill:hover{transform:scale(1.05);}
+@keyframes pulse-sos{0%,100%{box-shadow:0 0 0 0 rgba(255,69,0,0.5);}50%{box-shadow:0 0 0 8px rgba(255,69,0,0);}}
+
+/* PAGES */
+main{flex:1;overflow:hidden;position:relative;}
+.page{
+  position:absolute;inset:0;overflow-y:auto;
+  opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity 0.3s ease,transform 0.3s ease;
+}
+.page.active{opacity:1;pointer-events:all;transform:translateY(0);}
+.pi{padding:2.2rem 2.8rem 4rem;max-width:920px;margin:0 auto;}
+
+.page-tag{display:inline-block;font-size:0.69rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--fire);margin-bottom:0.5rem;}
+.page-title{font-family:'Black Han Sans',sans-serif;font-size:clamp(1.7rem,3vw,2.6rem);line-height:1.1;margin-bottom:0.7rem;}
+.page-desc{color:var(--mist);font-size:0.9rem;line-height:1.8;font-weight:300;max-width:580px;margin-bottom:1.6rem;}
+
+.btn-fire{background:var(--fire);color:var(--white);border:none;border-radius:2rem;padding:0.75rem 1.6rem;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer;transition:background 0.2s,transform 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+.btn-fire:hover{background:var(--ember);transform:translateY(-2px);}
+.btn-outline{background:transparent;color:var(--light);border:1px solid rgba(255,255,255,0.16);border-radius:2rem;padding:0.75rem 1.6rem;font-family:inherit;font-size:0.88rem;font-weight:500;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── PAGE 1 INTRO ── */
+.hero-band{background:linear-gradient(135deg,rgba(255,69,0,0.13) 0%,rgba(19,19,26,0) 65%);border:1px solid rgba(255,69,0,0.18);border-radius:1.2rem;padding:2.2rem;margin-bottom:1.6rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:1.5rem;}
+.hero-band .flame{font-size:4.5rem;filter:drop-shadow(0 0 22px rgba(255,69,0,0.55));animation:float 4s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.tagline{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,2.8vw,2.2rem);line-height:1.2;color:var(--light);margin-bottom:0.7rem;}
+.tagline em{color:var(--fire);font-style:italic;}
+
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.9rem;margin-bottom:1.6rem;}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:0.9rem;padding:1.1rem;text-align:center;}
+.info-card .num{font-family:'Black Han Sans',sans-serif;font-size:1.9rem;color:var(--fire);line-height:1;margin-bottom:0.25rem;}
+.info-card .lbl{font-size:0.72rem;color:var(--mist);}
+
+.flow-mini{display:flex;margin-bottom:1.6rem;border-radius:0.8rem;overflow:hidden;}
+.fm-step{flex:1;background:var(--card);border-right:1px solid var(--border);padding:0.9rem 0.5rem;text-align:center;font-size:0.75rem;color:var(--mist);position:relative;}
+.fm-step:last-child{border-right:none;}
+.fm-step .fi{font-size:1.3rem;display:block;margin-bottom:0.25rem;}
+
+.compare-block{background:var(--card);border:1px solid var(--border);border-radius:1.1rem;padding:1.5rem;margin-bottom:1.6rem;display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.cb-col p.cb-label{font-size:0.75rem;font-weight:700;letter-spacing:0.08em;margin-bottom:0.6rem;}
+.cb-col p.cb-label.fire{color:var(--fire);}
+.cb-col p.cb-label.grey{color:var(--mist);}
+.cb-col ul{list-style:none;}
+.cb-col ul li{font-size:0.8rem;line-height:1.9;display:flex;align-items:center;gap:0.4rem;}
+
+.cta-row{display:flex;gap:0.8rem;flex-wrap:wrap;}
+
+/* ── PAGE 2 SURVEY ── */
+.sw-wrap{max-width:660px;}
+.prog-bar{height:4px;background:var(--card);border-radius:3px;margin-bottom:1.8rem;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--fire),var(--gold));border-radius:3px;transition:width 0.45s ease;}
+
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:1.1rem;padding:1.8rem;margin-bottom:1.1rem;animation:fadeUp 0.35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.q-num{font-size:0.7rem;font-weight:700;letter-spacing:0.15em;color:var(--fire);margin-bottom:0.45rem;}
+.q-text{font-size:0.97rem;font-weight:500;margin-bottom:1.1rem;line-height:1.5;}
+.q-opts{display:flex;flex-direction:column;gap:0.55rem;}
+.q-opt{display:flex;align-items:center;gap:0.75rem;background:var(--ash);border:1.5px solid var(--border);border-radius:0.65rem;padding:0.7rem 0.9rem;cursor:pointer;transition:border-color 0.2s,background 0.2s;font-size:0.86rem;}
+.q-opt:hover{border-color:rgba(255,69,0,0.35);background:rgba(255,69,0,0.05);}
+.q-opt.selected{border-color:var(--fire);background:rgba(255,69,0,0.1);color:var(--light);}
+.q-radio{width:17px;height:17px;border-radius:50%;border:2px solid var(--mist);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;}
+.q-opt.selected .q-radio{border-color:var(--fire);background:var(--fire);}
+.q-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--white);display:none;}
+.q-opt.selected .q-radio-dot{display:block;}
+
+.sw-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.3rem;}
+.q-counter{font-size:0.8rem;color:var(--mist);}
+
+#survey-result{display:none;animation:fadeUp 0.45s ease;}
+.result-card{background:var(--card);border-radius:1.3rem;padding:2.2rem;border:1px solid var(--border);text-align:center;margin-bottom:1.2rem;}
+.result-grade{font-family:'Black Han Sans',sans-serif;font-size:2.8rem;margin-bottom:0.4rem;}
+.result-desc{color:var(--mist);font-size:0.88rem;line-height:1.7;margin-bottom:1.2rem;}
+.result-actions{display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;}
+
+/* ── PAGE 3 CONSULT ── */
+.consult-types{display:grid;grid-template-columns:repeat(4,1fr);gap:0.9rem;margin-bottom:1.4rem;}
+.ct-card{background:var(--card);border:1.5px solid var(--border);border-radius:1rem;padding:1.2rem 1rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.ct-card:hover{border-color:rgba(255,69,0,0.3);}
+.ct-card.selected{border-color:var(--fire);background:rgba(255,69,0,0.08);}
+.ct-icon{font-size:1.8rem;margin-bottom:0.5rem;}
+.ct-title{font-weight:700;font-size:0.85rem;margin-bottom:0.2rem;}
+.ct-desc{font-size:0.73rem;color:var(--mist);line-height:1.4;}
+
+.form-box{background:var(--card);border-radius:1.1rem;padding:1.8rem;border:1px solid var(--border);}
+.form-box-title{font-family:'Black Han Sans',sans-serif;font-size:1rem;margin-bottom:1.1rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:0.9rem;}
+.fg{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:0.9rem;}
+.fg label{font-size:0.72rem;font-weight:700;color:var(--mist);letter-spacing:0.08em;text-transform:uppercase;}
+.fi,.fs,.fta{background:var(--ash);border:1px solid var(--border);border-radius:0.55rem;color:var(--white);font-family:inherit;font-size:0.86rem;padding:0.65rem 0.9rem;outline:none;transition:border-color 0.2s;width:100%;}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--fire);}
+.fs option{background:var(--ash);}
+.fta{resize:vertical;min-height:80px;}
+.priv{display:flex;align-items:flex-start;gap:0.55rem;font-size:0.78rem;color:var(--mist);margin-bottom:1.3rem;cursor:pointer;}
+.priv input{margin-top:2px;accent-color:var(--fire);}
+
+/* ── PAGE 4 PROGRAMS ── */
+.prog-filter{display:flex;gap:0.45rem;margin-bottom:1.6rem;flex-wrap:wrap;}
+.fb-btn{background:var(--card);border:1px solid var(--border);border-radius:2rem;color:var(--mist);font-family:inherit;font-size:0.78rem;font-weight:500;padding:0.4rem 0.9rem;cursor:pointer;transition:all 0.2s;}
+.fb-btn:hover{border-color:rgba(255,69,0,0.3);color:var(--light);}
+.fb-btn.active{background:rgba(255,69,0,0.14);border-color:var(--fire);color:var(--fire);font-weight:700;}
+
+.prog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:1.1rem;overflow:hidden;transition:transform 0.22s,border-color 0.22s;}
+.pc:hover{transform:translateY(-3px);border-color:rgba(255,69,0,0.28);}
+.pc-thumb{height:80px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.pc-body{padding:1rem;}
+.pc-tag-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;}
+.pc-tag{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.18rem 0.55rem;border-radius:2rem;}
+.pc-dur{font-size:0.7rem;color:var(--mist);}
+.pc-title{font-weight:700;font-size:0.86rem;margin-bottom:0.25rem;line-height:1.3;}
+.pc-desc{font-size:0.76rem;color:var(--mist);line-height:1.5;}
+.pc-foot{padding:0.7rem 1rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.pc-level{font-size:0.72rem;color:var(--mist);}
+.pc-apply{background:var(--fire);color:var(--white);border:none;border-radius:0.9rem;padding:0.3rem 0.8rem;font-family:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;transition:background 0.2s;}
+.pc-apply:hover{background:var(--ember);}
+
+/* ── PAGE 5 FEEDBACK ── */
+.fb-types{display:grid;grid-template-columns:repeat(4,1fr);gap:0.9rem;margin-bottom:1.4rem;}
+.fbt{background:var(--card);border:1.5px solid var(--border);border-radius:1rem;padding:1.1rem 0.9rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.fbt:hover{border-color:rgba(255,69,0,0.3);}
+.fbt.selected{border-color:var(--fire);background:rgba(255,69,0,0.08);}
+.fbt-icon{font-size:1.5rem;margin-bottom:0.4rem;}
+.fbt-title{font-weight:700;font-size:0.83rem;margin-bottom:0.15rem;}
+.fbt-desc{font-size:0.71rem;color:var(--mist);line-height:1.4;}
+
+.star-row{display:flex;gap:0.35rem;margin-bottom:0.25rem;}
+.star{font-size:1.5rem;cursor:pointer;transition:transform 0.15s;filter:grayscale(1) opacity(0.35);}
+.star.on,.star:hover{filter:none;transform:scale(1.15);}
+.star-lbl{font-size:0.76rem;color:var(--mist);margin-bottom:0.9rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.8rem;right:1.8rem;background:var(--green);color:var(--white);padding:0.8rem 1.3rem;border-radius:0.75rem;font-weight:700;font-size:0.84rem;display:flex;align-items:center;gap:0.45rem;transform:translateY(70px);opacity:0;transition:transform 0.3s ease,opacity 0.3s ease;z-index:999;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.09);border-radius:3px;}
+
+@media(max-width:700px){
+  .info-grid{grid-template-columns:repeat(2,1fr);}
+  .consult-types,.fb-types{grid-template-columns:1fr 1fr;}
+  .prog-grid{grid-template-columns:1fr 1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .compare-block{grid-template-columns:1fr;}
+  .hero-band{grid-template-columns:1fr;}
+  .hero-band .flame{display:none;}
+  .pi{padding:1.4rem 1.1rem 3rem;}
+  .tab-btn .tl{display:none;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span>🔥</span> HeroCare</div>
+  <nav>
+    <button class="tab-btn active" onclick="showPage('p-intro',this)"><span>🏠</span><span class="tl"> 소개</span></button>
+    <button class="tab-btn" onclick="showPage('p-survey',this)"><span>📋</span><span class="tl"> 심리검사</span></button>
+    <button class="tab-btn" onclick="showPage('p-consult',this)"><span>🤝</span><span class="tl"> 상담신청</span></button>
+    <button class="tab-btn" onclick="showPage('p-programs',this)"><span>🧩</span><span class="tl"> 프로그램</span></button>
+    <button class="tab-btn" onclick="showPage('p-feedback',this)"><span>✍️</span><span class="tl"> 이의사항</span></button>
+  </nav>
+  <button class="sos-pill" onclick="gotoConsult(true)">🚨 긴급 상담</button>
+</header>
+
+<main>
+
+<!-- ════ PAGE 1: 소개 ════ -->
+<div class="page active" id="p-intro">
+<div class="pi">
+  <div class="hero-band">
+    <div>
+      <p class="page-tag">소방관 정신건강 통합 플랫폼</p>
+      <p class="tagline">영웅의 마음을<br/><em>먼저</em> 지킵니다</p>
+      <p style="color:var(--mist);font-size:0.88rem;line-height:1.75;font-weight:300;max-width:460px;margin-bottom:1.3rem;">
+        HeroCare는 소방관의 PTSD·우울·불안을 정기 심리검사로 조기 발견하고, 위험 신호를 자동 분석해 상담·치료·사후관리까지 연결하는 통합 심리케어 플랫폼입니다.
+      </p>
+      <div class="cta-row">
+        <button class="btn-fire" onclick="showPage('p-survey',document.querySelectorAll('.tab-btn')[1])">📋 심리검사 시작하기</button>
+        <button class="btn-outline" onclick="showPage('p-consult',document.querySelectorAll('.tab-btn')[2])">🤝 상담 신청하기</button>
+      </div>
+    </div>
+    <div class="flame">🛡️</div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card"><div class="num">2주</div><div class="lbl">정기 검사 주기</div></div>
+    <div class="info-card"><div class="num">24h</div><div class="lbl">긴급 상담 대응</div></div>
+    <div class="info-card"><div class="num">4단계</div><div class="lbl">자동 위험도 분류</div></div>
+    <div class="info-card"><div class="num">100%</div><div class="lbl">개인정보 보호</div></div>
+  </div>
+
+  <div class="flow-mini">
+    <div class="fm-step"><span class="fi">📋</span>정기 심리검사</div>
+    <div class="fm-step"><span class="fi">📊</span>위험도 분석</div>
+    <div class="fm-step"><span class="fi">🤝</span>상담 연결</div>
+    <div class="fm-step"><span class="fi">🧩</span>프로그램 추천</div>
+    <div class="fm-step"><span class="fi">📈</span>사후 관리</div>
+  </div>
+
+  <div class="compare-block">
+    <div class="cb-col">
+      <p class="cb-label grey">기존 시스템</p>
+      <ul>
+        <li>❌ 자발적 이용에만 의존</li>
+        <li>❌ 문제 발생 후 사후 대응</li>
+        <li>❌ 단발성 상담으로 종료</li>
+        <li>❌ 체계적 연결 경로 없음</li>
+        <li>❌ 조기 발견 불가</li>
+      </ul>
+    </div>
+    <div class="cb-col">
+      <p class="cb-label fire">🔥 HeroCare</p>
+      <ul>
+        <li>✅ 정기검사 기반 자동 관리</li>
+        <li>✅ 조기 발견 사전 예방</li>
+        <li>✅ 치료·사후관리 지속 연결</li>
+        <li>✅ AI 위험도 자동 분석</li>
+        <li>✅ 전담 상담사 자동 매칭</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cta-row">
+    <button class="btn-fire" onclick="showPage('p-survey',document.querySelectorAll('.tab-btn')[1])">📋 심리검사 하러 가기</button>
+    <button class="btn-outline" onclick="showPage('p-programs',document.querySelectorAll('.tab-btn')[3])">🧩 프로그램 보기</button>
+    <button class="btn-outline" onclick="showPage('p-feedback',document.querySelectorAll('.tab-btn')[4])">✍️ 의견 보내기</button>
+  </div>
+</div>
+</div>
+
+<!-- ════ PAGE 2: 심리검사 ════ -->
+<div class="page" id="p-survey">
+<div class="pi">
+  <p class="page-tag">정기 심리검사</p>
+  <h1 class="page-title">나의 마음 상태 확인하기</h1>
+  <p class="page-desc">소요 시간 약 5분 · 결과는 본인과 담당 상담사만 열람 가능합니다.</p>
+
+  <div class="sw-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:10%"></div></div>
+
+    <div id="survey-qs">
+      <div class="q-card" id="q1">
+        <p class="q-num">질문 1 / 10</p>
+        <p class="q-text">최근 2주 동안, 일이나 여가 활동에 대한 흥미나 즐거움이 거의 없었나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q1')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없었다</label>
+          <label class="q-opt" onclick="sel(this,'q1')"><span class="q-radio"><span class="q-radio-dot"></span></span>며칠 동안</label>
+          <label class="q-opt" onclick="sel(this,'q1')"><span class="q-radio"><span class="q-radio-dot"></span></span>7일 이상</label>
+          <label class="q-opt" onclick="sel(this,'q1')"><span class="q-radio"><span class="q-radio-dot"></span></span>거의 매일</label>
+        </div>
+      </div>
+      <div class="q-card" id="q2" style="display:none">
+        <p class="q-num">질문 2 / 10</p>
+        <p class="q-text">기분이 가라앉거나, 우울하거나, 희망이 없다고 느낀 적이 있었나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q2')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없었다</label>
+          <label class="q-opt" onclick="sel(this,'q2')"><span class="q-radio"><span class="q-radio-dot"></span></span>며칠 동안</label>
+          <label class="q-opt" onclick="sel(this,'q2')"><span class="q-radio"><span class="q-radio-dot"></span></span>7일 이상</label>
+          <label class="q-opt" onclick="sel(this,'q2')"><span class="q-radio"><span class="q-radio-dot"></span></span>거의 매일</label>
+        </div>
+      </div>
+      <div class="q-card" id="q3" style="display:none">
+        <p class="q-num">질문 3 / 10</p>
+        <p class="q-text">잠들기 어렵거나, 자주 깨거나, 너무 많이 자는 경험이 있었나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q3')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없었다</label>
+          <label class="q-opt" onclick="sel(this,'q3')"><span class="q-radio"><span class="q-radio-dot"></span></span>며칠 동안</label>
+          <label class="q-opt" onclick="sel(this,'q3')"><span class="q-radio"><span class="q-radio-dot"></span></span>7일 이상</label>
+          <label class="q-opt" onclick="sel(this,'q3')"><span class="q-radio"><span class="q-radio-dot"></span></span>거의 매일</label>
+        </div>
+      </div>
+      <div class="q-card" id="q4" style="display:none">
+        <p class="q-num">질문 4 / 10</p>
+        <p class="q-text">과거 충격적인 사건(화재, 사고 현장 등)이 반복적으로 생각나거나 꿈에 나타나나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q4')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없다</label>
+          <label class="q-opt" onclick="sel(this,'q4')"><span class="q-radio"><span class="q-radio-dot"></span></span>가끔 있다</label>
+          <label class="q-opt" onclick="sel(this,'q4')"><span class="q-radio"><span class="q-radio-dot"></span></span>자주 있다</label>
+          <label class="q-opt" onclick="sel(this,'q4')"><span class="q-radio"><span class="q-radio-dot"></span></span>매우 자주 있다</label>
+        </div>
+      </div>
+      <div class="q-card" id="q5" style="display:none">
+        <p class="q-num">질문 5 / 10</p>
+        <p class="q-text">특정 장소나 상황을 피하려는 경향이 생겼나요? (예: 특정 현장 유형, 뉴스 등)</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q5')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없다</label>
+          <label class="q-opt" onclick="sel(this,'q5')"><span class="q-radio"><span class="q-radio-dot"></span></span>약간 있다</label>
+          <label class="q-opt" onclick="sel(this,'q5')"><span class="q-radio"><span class="q-radio-dot"></span></span>상당히 있다</label>
+          <label class="q-opt" onclick="sel(this,'q5')"><span class="q-radio"><span class="q-radio-dot"></span></span>매우 심하다</label>
+        </div>
+      </div>
+      <div class="q-card" id="q6" style="display:none">
+        <p class="q-num">질문 6 / 10</p>
+        <p class="q-text">신경이 날카롭거나, 쉽게 화를 내거나, 작은 자극에도 과민 반응한 적이 있나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q6')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없다</label>
+          <label class="q-opt" onclick="sel(this,'q6')"><span class="q-radio"><span class="q-radio-dot"></span></span>가끔 있다</label>
+          <label class="q-opt" onclick="sel(this,'q6')"><span class="q-radio"><span class="q-radio-dot"></span></span>자주 있다</label>
+          <label class="q-opt" onclick="sel(this,'q6')"><span class="q-radio"><span class="q-radio-dot"></span></span>매우 자주 있다</label>
+        </div>
+      </div>
+      <div class="q-card" id="q7" style="display:none">
+        <p class="q-num">질문 7 / 10</p>
+        <p class="q-text">업무 외 시간에도 일에 대한 걱정이나 스트레스가 지속되나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q7')"><span class="q-radio"><span class="q-radio-dot"></span></span>거의 없다</label>
+          <label class="q-opt" onclick="sel(this,'q7')"><span class="q-radio"><span class="q-radio-dot"></span></span>가끔 있다</label>
+          <label class="q-opt" onclick="sel(this,'q7')"><span class="q-radio"><span class="q-radio-dot"></span></span>자주 있다</label>
+          <label class="q-opt" onclick="sel(this,'q7')"><span class="q-radio"><span class="q-radio-dot"></span></span>항상 있다</label>
+        </div>
+      </div>
+      <div class="q-card" id="q8" style="display:none">
+        <p class="q-num">질문 8 / 10</p>
+        <p class="q-text">동료나 가족과 멀어지거나 고립된 느낌이 든 적이 있나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q8')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없다</label>
+          <label class="q-opt" onclick="sel(this,'q8')"><span class="q-radio"><span class="q-radio-dot"></span></span>가끔 있다</label>
+          <label class="q-opt" onclick="sel(this,'q8')"><span class="q-radio"><span class="q-radio-dot"></span></span>자주 있다</label>
+          <label class="q-opt" onclick="sel(this,'q8')"><span class="q-radio"><span class="q-radio-dot"></span></span>매우 자주 있다</label>
+        </div>
+      </div>
+      <div class="q-card" id="q9" style="display:none">
+        <p class="q-num">질문 9 / 10</p>
+        <p class="q-text">피로감이 심하거나 무기력함을 자주 느끼나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q9')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 없다</label>
+          <label class="q-opt" onclick="sel(this,'q9')"><span class="q-radio"><span class="q-radio-dot"></span></span>가끔 있다</label>
+          <label class="q-opt" onclick="sel(this,'q9')"><span class="q-radio"><span class="q-radio-dot"></span></span>자주 있다</label>
+          <label class="q-opt" onclick="sel(this,'q9')"><span class="q-radio"><span class="q-radio-dot"></span></span>매우 자주 있다</label>
+        </div>
+      </div>
+      <div class="q-card" id="q10" style="display:none">
+        <p class="q-num">질문 10 / 10</p>
+        <p class="q-text">스스로 도움을 받고 싶지만 요청하기가 어렵게 느껴지나요?</p>
+        <div class="q-opts">
+          <label class="q-opt" onclick="sel(this,'q10')"><span class="q-radio"><span class="q-radio-dot"></span></span>전혀 그렇지 않다</label>
+          <label class="q-opt" onclick="sel(this,'q10')"><span class="q-radio"><span class="q-radio-dot"></span></span>약간 그렇다</label>
+          <label class="q-opt" onclick="sel(this,'q10')"><span class="q-radio"><span class="q-radio-dot"></span></span>자주 그렇다</label>
+          <label class="q-opt" onclick="sel(this,'q10')"><span class="q-radio"><span class="q-radio-dot"></span></span>항상 그렇다</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-nav" id="sw-nav">
+      <span class="q-counter" id="q-counter">1 / 10</span>
+      <div style="display:flex;gap:0.7rem;">
+        <button class="btn-outline" id="prev-btn" onclick="prevQ()" style="display:none;padding:0.55rem 1.1rem;font-size:0.82rem;">← 이전</button>
+        <button class="btn-fire" id="next-btn" onclick="nextQ()" style="padding:0.55rem 1.1rem;font-size:0.82rem;">다음 →</button>
+      </div>
+    </div>
+
+    <div id="survey-result">
+      <div class="result-card">
+        <div class="result-grade" id="r-grade"></div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:0.6rem;" id="r-title"></div>
+        <div class="result-desc" id="r-desc"></div>
+        <div class="result-actions" id="r-actions"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ PAGE 3: 상담신청 ════ -->
+<div class="page" id="p-consult">
+<div class="pi">
+  <p class="page-tag">상담 신청</p>
+  <h1 class="page-title">전문 상담사와 연결하기</h1>
+  <p class="page-desc">상담 유형을 선택하고 신청 정보를 입력하시면 담당 상담사가 24시간 내 연락드립니다.</p>
+
+  <p style="font-size:0.75rem;font-weight:700;color:var(--mist);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.7rem;">상담 유형 선택</p>
+  <div class="consult-types">
+    <div class="ct-card selected" onclick="selCT(this)"><div class="ct-icon">💬</div><div class="ct-title">일반 상담</div><div class="ct-desc">스트레스, 번아웃, 일상적 어려움</div></div>
+    <div class="ct-card" onclick="selCT(this)"><div class="ct-icon">🧠</div><div class="ct-title">PTSD 전문</div><div class="ct-desc">트라우마, 플래시백 전문 치료</div></div>
+    <div class="ct-card" onclick="selCT(this)"><div class="ct-icon">🌙</div><div class="ct-title">수면 장애</div><div class="ct-desc">불면증, 악몽 특화 상담</div></div>
+    <div class="ct-card" onclick="selCT(this)" id="urgent-type"><div class="ct-icon">🚨</div><div class="ct-title">긴급 위기</div><div class="ct-desc">즉각 개입, 24시간 가능</div></div>
+  </div>
+
+  <div class="form-box">
+    <p class="form-box-title">신청 정보 입력</p>
+    <div class="form-row">
+      <div class="fg"><label>이름</label><input class="fi" type="text" placeholder="홍길동"/></div>
+      <div class="fg"><label>소속 소방서</label><input class="fi" type="text" placeholder="○○소방서"/></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>연락처</label><input class="fi" type="tel" placeholder="010-0000-0000"/></div>
+      <div class="fg"><label>희망 상담 방식</label>
+        <select class="fs"><option>비대면 화상 상담</option><option>전화 상담</option><option>대면 상담</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>희망 날짜</label><input class="fi" type="date"/></div>
+      <div class="fg"><label>희망 시간대</label>
+        <select class="fs"><option>오전 (09:00~12:00)</option><option>오후 (13:00~17:00)</option><option>저녁 (18:00~21:00)</option><option>가능한 빨리</option></select>
+      </div>
+    </div>
+    <div class="fg"><label>상담 희망 내용 (선택)</label><textarea class="fta" placeholder="간략하게 상담 받고 싶은 내용을 적어주세요."></textarea></div>
+    <label class="priv"><input type="checkbox" id="priv-chk"/>개인정보 수집·이용에 동의합니다. 상담 내용은 본인과 담당 상담사만 열람 가능합니다.</label>
+    <button class="btn-fire" onclick="submitConsult()" style="width:100%;justify-content:center;font-size:0.95rem;padding:0.9rem;">🤝 상담 신청하기</button>
+  </div>
+</div>
+</div>
+
+<!-- ════ PAGE 4: 프로그램 ════ -->
+<div class="page" id="p-programs">
+<div class="pi">
+  <p class="page-tag">관련 프로그램</p>
+  <h1 class="page-title">맞춤형 치료 프로그램</h1>
+  <p class="page-desc">심리검사 결과에 따라 추천 프로그램이 달라지며, 직접 신청도 가능합니다.</p>
+
+  <div class="prog-filter">
+    <button class="fb-btn active" onclick="fp(this,'all')">전체</button>
+    <button class="fb-btn" onclick="fp(this,'ptsd')">PTSD</button>
+    <button class="fb-btn" onclick="fp(this,'mind')">마음챙김</button>
+    <button class="fb-btn" onclick="fp(this,'sleep')">수면</button>
+    <button class="fb-btn" onclick="fp(this,'group')">집단</button>
+    <button class="fb-btn" onclick="fp(this,'body')">신체</button>
+  </div>
+  <div class="prog-grid" id="prog-grid"></div>
+</div>
+</div>
+
+<!-- ════ PAGE 5: 이의사항 ════ -->
+<div class="page" id="p-feedback">
+<div class="pi">
+  <p class="page-tag">이의사항 · 의견 제출</p>
+  <h1 class="page-title">의견을 보내주세요</h1>
+  <p class="page-desc">서비스 개선, 불만, 건의사항을 자유롭게 말씀해 주세요. 모든 의견은 익명 처리됩니다.</p>
+
+  <div class="fb-types">
+    <div class="fbt selected" onclick="selFT(this)"><div class="fbt-icon">💡</div><div class="fbt-title">개선 제안</div><div class="fbt-desc">더 나은 HeroCare를 위한 아이디어</div></div>
+    <div class="fbt" onclick="selFT(this)"><div class="fbt-icon">⚠️</div><div class="fbt-title">불만 / 이의사항</div><div class="fbt-desc">불편하거나 문제가 된 사항</div></div>
+    <div class="fbt" onclick="selFT(this)"><div class="fbt-icon">🔒</div><div class="fbt-title">개인정보 관련</div><div class="fbt-desc">데이터·열람 권한 관련 문의</div></div>
+    <div class="fbt" onclick="selFT(this)"><div class="fbt-icon">💬</div><div class="fbt-title">일반 의견</div><div class="fbt-desc">기타 하고 싶은 말씀</div></div>
+  </div>
+
+  <div class="form-box">
+    <p class="form-box-title" style="margin-bottom:0.8rem;">서비스 만족도</p>
+    <div class="star-row" id="star-row">
+      <span class="star" onclick="rate(1)">★</span>
+      <span class="star" onclick="rate(2)">★</span>
+      <span class="star" onclick="rate(3)">★</span>
+      <span class="star" onclick="rate(4)">★</span>
+      <span class="star" onclick="rate(5)">★</span>
+    </div>
+    <p class="star-lbl" id="star-lbl">별점을 선택해주세요</p>
+    <div class="fg"><label>제목</label><input class="fi" type="text" placeholder="의견 제목을 입력해주세요"/></div>
+    <div class="fg"><label>소속 (선택)</label><input class="fi" type="text" placeholder="○○소방서 (익명 처리됩니다)"/></div>
+    <div class="fg"><label>상세 내용</label><textarea class="fta" placeholder="불편하셨던 점, 개선 제안, 기타 의견을 자유롭게 작성해주세요." style="min-height:120px;"></textarea></div>
+    <div class="fg"><label>답변 받을 이메일 (선택)</label><input class="fi" type="email" placeholder="answer@example.com"/></div>
+    <label class="priv"><input type="checkbox"/>제출한 의견은 서비스 개선 목적으로만 활용되며 익명으로 처리됩니다.</label>
+    <button class="btn-fire" onclick="submitFB()" style="width:100%;justify-content:center;font-size:0.95rem;padding:0.9rem;">✍️ 의견 제출하기</button>
+  </div>
+</div>
+</div>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+// PAGE SWITCH
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function gotoConsult(urgent){
+  showPage('p-consult',document.querySelectorAll('.tab-btn')[2]);
+  if(urgent){
+    document.querySelectorAll('.ct-card').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('urgent-type').classList.add('selected');
+  }
+}
+
+// SURVEY
+let curQ=1,ans={};
+function sel(el,qid){
+  document.querySelectorAll('#'+qid+' .q-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  ans[qid]=[...document.querySelectorAll('#'+qid+' .q-opt')].indexOf(el);
+}
+function nextQ(){
+  if(ans['q'+curQ]==null){toast('⚠️ 답변을 선택해주세요','#FF7A1F');return;}
+  if(curQ<10){
+    document.getElementById('q'+curQ).style.display='none';
+    curQ++;
+    document.getElementById('q'+curQ).style.display='block';
+    document.getElementById('q-counter').textContent=curQ+' / 10';
+    document.getElementById('prog-fill').style.width=(curQ/10*100)+'%';
+    document.getElementById('prev-btn').style.display='inline-flex';
+    if(curQ===10) document.getElementById('next-btn').textContent='결과 보기 ✓';
+  } else showResult();
+}
+function prevQ(){
+  if(curQ>1){
+    document.getElementById('q'+curQ).style.display='none';
+    curQ--;
+    document.getElementById('q'+curQ).style.display='block';
+    document.getElementById('q-counter').textContent=curQ+' / 10';
+    document.getElementById('prog-fill').style.width=(curQ/10*100)+'%';
+    document.getElementById('next-btn').textContent='다음 →';
+    if(curQ===1) document.getElementById('prev-btn').style.display='none';
+  }
+}
+function showResult(){
+  let tot=Object.values(ans).reduce((a,b)=>a+b,0);
+  let g,t,d,c,act;
+  if(tot<=7){g='✅ 정상';t='현재 정신건강 상태 양호';d='특별한 문제가 발견되지 않았습니다. 2주 후 정기검사로 꾸준히 관리하세요.';c='#22C55E';act='<button class="btn-outline" onclick="resetSurvey()">다시 검사하기</button>';}
+  else if(tot<=15){g='🟡 주의';t='경미한 스트레스 징후 감지';d='일부 스트레스 지표가 상승하고 있습니다. 자가관리 콘텐츠와 프로그램을 통해 관리를 시작하세요.';c='#FACC15';act='<button class="btn-fire" onclick="showPage(\'p-programs\',document.querySelectorAll(\'.tab-btn\')[3])">🧩 프로그램 보기</button><button class="btn-outline" onclick="resetSurvey()">다시 검사</button>';}
+  else if(tot<=22){g='🟠 위험';t='상담 연결이 권장됩니다';d='상당한 심리적 어려움이 감지되었습니다. 전문 상담사와의 상담을 강력히 권장합니다.';c='#FB923C';act='<button class="btn-fire" onclick="showPage(\'p-consult\',document.querySelectorAll(\'.tab-btn\')[2])">🤝 상담 신청</button><button class="btn-outline" onclick="resetSurvey()">다시 검사</button>';}
+  else{g='🔴 고위험';t='즉각적 개입이 필요합니다';d='심각한 심리적 위험 신호가 감지되었습니다. 즉시 긴급 상담을 받으시기 바랍니다.';c='#F87171';act='<button class="btn-fire" style="background:#F87171" onclick="gotoConsult(true)">🚨 긴급 상담 신청</button><button class="btn-outline" onclick="resetSurvey()">다시 검사</button>';}
+  document.getElementById('survey-qs').style.display='none';
+  document.getElementById('sw-nav').style.display='none';
+  const res=document.getElementById('survey-result');
+  res.style.display='block';
+  document.getElementById('r-grade').textContent=g;
+  document.getElementById('r-grade').style.color=c;
+  document.getElementById('r-title').textContent=t;
+  document.getElementById('r-desc').textContent=d;
+  document.getElementById('r-actions').innerHTML=act;
+  document.getElementById('prog-fill').style.width='100%';
+}
+function resetSurvey(){
+  curQ=1;ans={};
+  document.querySelectorAll('.q-card').forEach((c,i)=>c.style.display=i===0?'block':'none');
+  document.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));
+  document.getElementById('survey-qs').style.display='block';
+  document.getElementById('sw-nav').style.display='flex';
+  document.getElementById('survey-result').style.display='none';
+  document.getElementById('q-counter').textContent='1 / 10';
+  document.getElementById('prog-fill').style.width='10%';
+  document.getElementById('prev-btn').style.display='none';
+  document.getElementById('next-btn').textContent='다음 →';
+}
+
+// CONSULT
+function selCT(el){document.querySelectorAll('.ct-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+function submitConsult(){toast('✅ 상담이 신청되었습니다! 24시간 내 연락드립니다.');}
+
+// PROGRAMS
+const progs=[
+  {cat:'ptsd',icon:'🧠',bg:'rgba(239,68,68,0.12)',tag:'PTSD',tc:'#F87171',title:'트라우마 중심 인지행동치료 (TF-CBT)',desc:'현장 트라우마로 인한 PTSD를 인지행동치료로 체계적으로 치료합니다.',dur:'8주 과정',lv:'전문 상담 필요'},
+  {cat:'mind',icon:'🧘',bg:'rgba(139,92,246,0.12)',tag:'마음챙김',tc:'#A78BFA',title:'마음챙김 기반 스트레스 감소 (MBSR)',desc:'호흡과 명상으로 스트레스 반응을 조절하고 심리적 안정을 찾습니다.',dur:'6주 과정',lv:'누구나 참여 가능'},
+  {cat:'sleep',icon:'🌙',bg:'rgba(59,130,246,0.12)',tag:'수면',tc:'#60A5FA',title:'수면 장애 인지행동치료 (CBT-I)',desc:'불면증·악몽 개선을 위한 증거 기반 수면 치료 프로그램입니다.',dur:'4주 과정',lv:'수면 장애 진단자 우선'},
+  {cat:'group',icon:'👥',bg:'rgba(34,197,94,0.12)',tag:'집단',tc:'#4ADE80',title:'소방관 집단 상담 프로그램',desc:'동료 소방관들과 함께하는 집단 상담으로 유대감을 회복합니다.',dur:'월 2회',lv:'누구나 참여 가능'},
+  {cat:'body',icon:'🏃',bg:'rgba(245,158,11,0.12)',tag:'신체',tc:'#FBBF24',title:'스트레스 해소 운동 치료',desc:'신체 활동을 통한 스트레스 호르몬 조절 및 기분 개선 프로그램입니다.',dur:'상시 운영',lv:'누구나 참여 가능'},
+  {cat:'mind',icon:'🌬️',bg:'rgba(139,92,246,0.12)',tag:'마음챙김',tc:'#A78BFA',title:'호흡 훈련 & 이완 기법',desc:'전술적 호흡법과 점진적 근육 이완을 통한 즉각적 스트레스 해소.',dur:'2주 과정',lv:'누구나 참여 가능'},
+  {cat:'ptsd',icon:'👁️',bg:'rgba(239,68,68,0.12)',tag:'PTSD',tc:'#F87171',title:'안구 운동 민감소실 (EMDR)',desc:'EMDR 기법으로 트라우마 기억을 재처리하여 PTSD 증상을 완화합니다.',dur:'10주 과정',lv:'전문 상담 필요'},
+  {cat:'sleep',icon:'☁️',bg:'rgba(59,130,246,0.12)',tag:'수면',tc:'#60A5FA',title:'수면 위생 교육 & 루틴 설계',desc:'건강한 수면 패턴 형성을 위한 자기관리 루틴 설계 프로그램.',dur:'2주 과정',lv:'누구나 참여 가능'},
+  {cat:'group',icon:'🔥',bg:'rgba(255,69,0,0.12)',tag:'집단',tc:'#FB923C',title:'번아웃 예방 워크숍',desc:'조직 차원의 번아웃 예방과 회복탄력성 강화 집단 워크숍입니다.',dur:'분기 1회',lv:'관리자 권장'},
+];
+function renderProgs(f='all'){
+  const list=f==='all'?progs:progs.filter(p=>p.cat===f);
+  document.getElementById('prog-grid').innerHTML=list.map(p=>`
+    <div class="pc">
+      <div class="pc-thumb" style="background:${p.bg}">${p.icon}</div>
+      <div class="pc-body">
+        <div class="pc-tag-row">
+          <span class="pc-tag" style="background:${p.bg};color:${p.tc}">${p.tag}</span>
+          <span class="pc-dur">⏱ ${p.dur}</span>
+        </div>
+        <div class="pc-title">${p.title}</div>
+        <div class="pc-desc">${p.desc}</div>
+      </div>
+      <div class="pc-foot">
+        <span class="pc-level">👤 ${p.lv}</span>
+        <button class="pc-apply" onclick="applyProg('${p.title.substring(0,12)}')">신청하기</button>
+      </div>
+    </div>`).join('');
+}
+renderProgs();
+function fp(btn,cat){
+  document.querySelectorAll('.fb-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderProgs(cat);
+}
+function applyProg(n){toast('✅ "'+n+'..." 프로그램 신청이 완료되었습니다!');}
+
+// FEEDBACK
+function selFT(el){document.querySelectorAll('.fbt').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+const sLbls=['','별로예요','아쉬워요','보통이에요','좋아요','최고예요!'];
+function rate(n){
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));
+  document.getElementById('star-lbl').textContent=sLbls[n];
+}
+function submitFB(){toast('✅ 의견이 제출되었습니다. 소중한 피드백 감사합니다!');}
+
+// TOAST
+function toast(msg,color='#22C55E'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.style.background=color;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
